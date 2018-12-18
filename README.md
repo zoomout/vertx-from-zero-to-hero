@@ -1,3 +1,6 @@
+# This is the completed version of the workshop
+If you want to start from the scratch, the original workshop repository is here: https://github.com/cescoffier/vertx-microservices-workshop
+
 # Vert.x - From zero to (micro-) hero.
 
 This repository is a lab about vert.x explaining how to build distributed _microservice_ reactive applications using
