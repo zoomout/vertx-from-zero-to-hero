@@ -1,17 +1,22 @@
 package io.vertx.workshop.portfolio.impl;
 
-import io.vertx.core.*;
-import io.vertx.core.json.JsonObject;
-import io.vertx.servicediscovery.ServiceDiscovery;
-import io.vertx.workshop.portfolio.Portfolio;
-import io.vertx.workshop.portfolio.PortfolioService;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.CompositeFuture;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.servicediscovery.ServiceDiscovery;
+import io.vertx.servicediscovery.types.HttpEndpoint;
+import io.vertx.workshop.portfolio.Portfolio;
+import io.vertx.workshop.portfolio.PortfolioService;
 
 /**
  * The portfolio service implementation.
@@ -30,25 +35,28 @@ public class PortfolioServiceImpl implements PortfolioService {
 
   @Override
   public void getPortfolio(Handler<AsyncResult<Portfolio>> resultHandler) {
-    // TODO
-    // ----
-
-    // ----
+    resultHandler.handle(Future.succeededFuture());
   }
 
   private void sendActionOnTheEventBus(String action, int amount, JsonObject quote, int newAmount) {
-    // TODO
-    // ----
-
-    // ----
+    vertx.eventBus().publish(EVENT_ADDRESS, new JsonObject().
+        put("action", action).
+        put("quote", quote).
+        put("date", Instant.now().toEpochMilli()).
+        put("amount", amount).
+        put("owned", newAmount)
+    );
   }
 
   @Override
   public void evaluate(Handler<AsyncResult<Double>> resultHandler) {
-    // TODO
-    // ----
-
-    // ---
+    HttpEndpoint.getWebClient(discovery, new JsonObject().put("name", "quotes"), webClientAsyncResult -> {
+      if (webClientAsyncResult.failed()) {
+        resultHandler.handle(Future.failedFuture(webClientAsyncResult.cause()));
+      } else {
+        computeEvaluation(webClientAsyncResult.result(), resultHandler);
+      }
+    });
   }
 
   private void computeEvaluation(WebClient webClient, Handler<AsyncResult<Double>> resultHandler) {

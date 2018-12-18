@@ -44,12 +44,12 @@
                     <dd id="value">0</dd>
                     <dt>Total Value</dt>
                     <dd id="total">0</dd>
-                    <dt>Divinator Shares</dt>
-                    <dd id="divinator">0</dd>
-                    <dt>Black Coat Shares</dt>
-                    <dd id="blackcoat">0</dd>
-                    <dt>MacroHard Shares</dt>
-                    <dd id="macrohard">0</dd>
+                    <dt>Google Shares</dt>
+                    <dd id="google">0</dd>
+                    <dt>Amazon Shares</dt>
+                    <dd id="amazon">0</dd>
+                    <dt>Apple Shares</dt>
+                    <dd id="apple">0</dd>
                 </dl>
             </div>
 
@@ -135,9 +135,9 @@
 <script>
 
     var quotes = {
-        "divinator": 0,
-        "blackcoat": 0,
-        "macrohard": 0,
+        "google": 0,
+        "amazon": 0,
+        "apple": 0,
         "index": 0
     };
 
@@ -166,12 +166,12 @@
 
     function handleStockUpdate(quote) {
         var price = quote.bid;
-        if (quote.name === "Divinator") {
-            quotes.divinator = price;
-        } else if (quote.name === "Black Coat") {
-            quotes.blackcoat = price;
+        if (quote.name === "Google") {
+            quotes.google = price;
+        } else if (quote.name === "Apple") {
+            quotes.amazon = price;
         } else {
-            quotes.macrohard = price;
+            quotes.apple = price;
         }
     }
 
@@ -244,26 +244,26 @@
                     console.log("Error while retrieving the portfolio", err);
                 } else {
                     $("#cash").html(res.cash);
-                    var divinator = res.shares["Divinator"];
-                    var macrohard = res.shares["MacroHard"];
-                    var blackcoat = res.shares["Black Coat"];
+                    var google = res.shares["Google"];
+                    var apple = res.shares["Apple"];
+                    var amazon = res.shares["Amazon"];
 
-                    if (divinator) {
-                        $("#divinator").html(divinator);
+                    if (google) {
+                        $("#google").html(google);
                     } else {
-                        $("#divinator").html(0);
+                        $("#google").html(0);
                     }
 
-                    if (macrohard) {
-                        $("#macrohard").html(macrohard);
+                    if (apple) {
+                        $("#apple").html(apple);
                     } else {
-                        $("#macrohard").html(0);
+                        $("#apple").html(0);
                     }
 
-                    if (blackcoat) {
-                        $("#blackcoat").html(blackcoat);
+                    if (amazon) {
+                        $("#amazon").html(amazon);
                     } else {
-                        $("#blackcoat").html(0);
+                        $("#amazon").html(0);
                     }
 
                     service.evaluate(function (err, result) {
@@ -300,7 +300,7 @@
                     strokeColor: "rgba(220,220,220,1)",
                     pointColor: "rgba(220,220,220,1)",
                     pointStrokeColor: "#fff",
-                    label: "Divinator"
+                    label: "Google"
                 },
                 {
                     data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -308,7 +308,7 @@
                     strokeColor: "rgba(151,187,205,1)",
                     pointColor: "rgba(151,187,205,1)",
                     pointStrokeColor: "#fff",
-                    label: "Black Coat"
+                    label: "Amazon"
                 },
                 {
                     data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -316,7 +316,7 @@
                     strokeColor: "rgba(80,90,180,1)",
                     pointColor: "rgba(80,90,180,1)",
                     pointStrokeColor: "#fff",
-                    label: "MacroHard"
+                    label: "Apple"
                 }
             ]
         };
@@ -325,7 +325,7 @@
         var lastLabel = 10;
 
         setInterval(function () {
-            chart.addData([quotes.divinator, quotes.blackcoat, quotes.macrohard], ++lastLabel);
+            chart.addData([quotes.google, quotes.amazon, quotes.apple], ++lastLabel);
             chart.removeData();
         }, 3000);
 

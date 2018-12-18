@@ -1,12 +1,10 @@
 package io.vertx.workshop.quote;
 
+import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This verticle exposes a HTTP endpoint to retrieve the current / last values of the maker data (quotes).
@@ -15,18 +13,19 @@ import java.util.Map;
  */
 public class RestQuoteAPIVerticle extends AbstractVerticle {
 
-  private Map<String, JsonObject> quotes = new HashMap<>();
+  private JsonObject quotes = new JsonObject();
 
   @Override
   public void start() throws Exception {
     vertx.eventBus().<JsonObject>consumer(GeneratorConfigVerticle.ADDRESS)
         .handler(message -> {
+
           // TODO Populate the `quotes` map with the received quote
           // Quotes are json objects you can retrieve from the message body
           // The map is structured as follows: name -> quote
-          // ----
-
-          // ----
+          final JsonObject quote = message.body();
+          final String name = quote.getString("name");
+          quotes.put(name, quote);
         });
 
 
@@ -41,13 +40,18 @@ public class RestQuoteAPIVerticle extends AbstractVerticle {
           // Responses are returned as JSON, so don't forget the "content-type": "application/json" header.
           // If the symbol is set but not found, you should return 404.
           // Once the request handler is set,
-
-          response
-              .end(Json.encodePrettily(quotes));
-
-          // ----
-
-          // ----
+          @Nullable
+          final String name = request.getParam("name");
+          if (name == null) {
+            response.end(Json.encodePrettily(quotes));
+          } else {
+            final JsonObject quote = quotes.getJsonObject(name);
+            if (quote == null) {
+              response.setStatusCode(404).end();
+            } else {
+              response.end(quote.encodePrettily());
+            }
+          }
         })
         .listen(config().getInteger("http.port"), ar -> {
           if (ar.succeeded()) {
