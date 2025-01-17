@@ -17,7 +17,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <stack.version>3.4.1</stack.version>
+    <stack.version>4.5.11</stack.version>
 
     <!--overridden in each project packaged as a fat jar -->
     <main.verticle/>
